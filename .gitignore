@@ -1,0 +1,7 @@
+STYLY-NetSync-Utility-Unity/Library
+STYLY-NetSync-Utility-Unity/Logs
+STYLY-NetSync-Utility-Unity/Temp
+STYLY-NetSync-Utility-Unity/UserSettings
+*.csproj
+*.sln
+.DS_Store
