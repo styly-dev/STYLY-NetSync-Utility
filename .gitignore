@@ -5,3 +5,5 @@ STYLY-NetSync-Utility-Unity/UserSettings
 *.csproj
 *.sln
 .DS_Store
+STYLY-NetSync-Utility-Unity/obj
+STYLY-NetSync-Utility-Unity/.idea
