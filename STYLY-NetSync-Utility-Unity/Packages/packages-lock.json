@@ -20,6 +20,15 @@
       },
       "url": "https://package.openupm.com"
     },
+    "com.styly.styly-netsync.utility": {
+      "version": "file:com.styly.styly-netsync.utility",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.styly.styly-xr-rig": "0.4.10",
+        "com.styly.styly-netsync": "0.6.1"
+      }
+    },
     "com.styly.styly-xr-rig": {
       "version": "0.4.10",
       "depth": 1,
