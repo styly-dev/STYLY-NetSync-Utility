@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "com.cysharp.unitask": "2.5.10",
+    "com.github-glitchenzo.nugetforunity": "4.5.0",
+    "com.styly.styly-netsync": "0.6.1",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.10.0",
     "com.unity.ide.rider": "3.0.38",
@@ -42,14 +45,15 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.styly.styly-netsync": "0.6.1"
+    "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
     {
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
+        "com.cysharp",
+        "com.github-glitchenzo.nugetforunity",
         "com.styly.shader-collection.urp",
         "com.styly.styly-netsync",
         "com.styly.styly-xr-rig",
