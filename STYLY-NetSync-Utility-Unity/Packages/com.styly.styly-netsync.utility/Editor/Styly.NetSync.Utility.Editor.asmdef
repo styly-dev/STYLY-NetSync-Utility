@@ -1,0 +1,20 @@
+{
+    "name": "Styly.NetSync.Utility.Editor",
+    "rootNamespace": "Styly.NetSync.Utility.Editor",
+    "references": [
+        "Styly.NetSync.Utility.Runtime",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

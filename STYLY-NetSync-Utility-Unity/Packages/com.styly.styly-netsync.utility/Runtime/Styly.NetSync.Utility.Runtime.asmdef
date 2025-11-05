@@ -1,0 +1,17 @@
+{
+    "name": "Styly.NetSync.Utility.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "com.styly.styly-netsync"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
