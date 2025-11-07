@@ -39,6 +39,7 @@ MonoBehaviour:
     - com.styly.shader-collection.urp
     - com.styly.styly-netsync
     - com.styly.styly-xr-rig
+    - org.nuget
     - org.nuget.asyncio
     - org.nuget.nacl.net
     - org.nuget.netmq
