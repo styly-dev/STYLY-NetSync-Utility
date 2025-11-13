@@ -12,12 +12,23 @@ namespace Styly.NetSync.Utility
         where TGlobalVariable : Enum
         where TUserVariable : Enum
     {
+        public readonly struct UserVariableData<TValue>
+        {
+            public readonly int ClientNo;
+            public readonly TValue Value;
+
+            public UserVariableData(int clientNo, TValue value)
+            {
+                ClientNo = clientNo;
+                Value = value;
+            }
+        }
 
         Dictionary<TGlobalVariable, List<UnityAction<string>>> globalListeners = new ();
         Dictionary<TGlobalVariable, Subject<string>> globalSubjects = new ();
 
         Dictionary<TUserVariable, List<UnityAction<int, string>>> userListeners = new ();
-        Dictionary<TUserVariable, Subject<(int clientNo, string value)>> userSubjects = new ();
+        Dictionary<TUserVariable, Subject<UserVariableData<string>>> userSubjects = new ();
         
         void Start()
         {
@@ -59,7 +70,7 @@ namespace Styly.NetSync.Utility
 
             if (userSubjects.ContainsKey(variable))
             {
-                userSubjects[variable].OnNext((clientNo, newValue));
+                userSubjects[variable].OnNext(new UserVariableData<string>(clientNo, newValue));
             }
         }
 
@@ -118,28 +129,28 @@ namespace Styly.NetSync.Utility
         }
 
         // UserVariable
-        public Observable<(int clientNo, string value)> AsObservable(TUserVariable variable)
+        public Observable<UserVariableData<string>> AsObservable(TUserVariable variable)
         {
             if (!userSubjects.ContainsKey(variable))
             {
-                userSubjects[variable] = new Subject<(int clientNo, string value)>();
+                userSubjects[variable] = new Subject<UserVariableData<string>>();
             }
             return userSubjects[variable];
         }
 
-        public Observable<(int clientNo, bool value)> AsObservableBool(TUserVariable variable)
+        public Observable<UserVariableData<bool>> AsObservableBool(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => (v.clientNo, bool.Parse(v.value)));
+            return AsObservable(variable).Select(v => new UserVariableData<bool>(v.ClientNo, bool.Parse(v.Value)));
         }
 
-        public Observable<(int clientNo, int value)> AsObservableInt(TUserVariable variable)
+        public Observable<UserVariableData<int>> AsObservableInt(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => (v.clientNo, int.Parse(v.value)));
+            return AsObservable(variable).Select(v => new UserVariableData<int>(v.ClientNo, int.Parse(v.Value)));
         }
 
-        public Observable<(int clientNo, float value)> AsObservableFloat(TUserVariable variable)
+        public Observable<UserVariableData<float>> AsObservableFloat(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => (v.clientNo, float.Parse(v.value)));
+            return AsObservable(variable).Select(v => new UserVariableData<float>(v.ClientNo, float.Parse(v.Value)));
         }
 
         public void AddListener(TUserVariable variable, UnityAction<int, string> action)

@@ -9,9 +9,20 @@ namespace Styly.NetSync.Utility
 {
     public class RpcManagerBase<TRpc> : MonoBehaviour where TRpc : Enum
     {
+        public readonly struct RpcData
+        {
+            public readonly int ClientNo;
+            public readonly string[] Parameters;
+
+            public RpcData(int clientNo, string[] parameters)
+            {
+                ClientNo = clientNo;
+                Parameters = parameters;
+            }
+        }
 
         Dictionary<TRpc, List<UnityAction<int, string[]>>> rpcListeners = new ();
-        Dictionary<TRpc, Subject<(int clientNo, string[] parameters)>> rpcSubjects = new ();
+        Dictionary<TRpc, Subject<RpcData>> rpcSubjects = new ();
 
         
         public void Start()
@@ -40,15 +51,15 @@ namespace Styly.NetSync.Utility
             // R3用のストリーム発行
             if (rpcSubjects.ContainsKey(rpc))
             {
-                rpcSubjects[rpc].OnNext((clientNo, parameter));
+                rpcSubjects[rpc].OnNext(new RpcData(clientNo, parameter));
             }
         }
 
-        public Observable<(int clientNo, string[] parameters)> AsObservable(TRpc rpc)
+        public Observable<RpcData> AsObservable(TRpc rpc)
         {
             if (!rpcSubjects.ContainsKey(rpc))
             {
-                rpcSubjects[rpc] = new Subject<(int clientNo, string[] parameters)>();
+                rpcSubjects[rpc] = new Subject<RpcData>();
             }
             return rpcSubjects[rpc];
         }
