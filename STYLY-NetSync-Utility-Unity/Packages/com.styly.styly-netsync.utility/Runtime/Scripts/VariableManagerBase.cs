@@ -186,5 +186,34 @@ namespace Styly.NetSync.Utility
         {
             return NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue);
         }
+        public int GetAsInt(TUserVariable variable, int defaultValue = 0)
+        {
+            return int.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+        public float GetAsFloat(TUserVariable variable, float defaultValue = 0f)
+        {
+            return float.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+        public bool GetAsBool(TUserVariable variable, bool defaultValue = false)
+        {
+            return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+        
+        public string Get(TGlobalVariable variable, string defaultValue = null)
+        {
+            return NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue);
+        }
+        public int GetAsInt(TGlobalVariable variable, int defaultValue = 0)
+        {
+            return int.Parse(NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+        public float GetAsFloat(TGlobalVariable variable, float defaultValue = 0f)
+        {
+            return float.Parse(NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+        public bool GetAsBool(TGlobalVariable variable, bool defaultValue = false)
+        {
+            return bool.Parse(NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
     }
 }
