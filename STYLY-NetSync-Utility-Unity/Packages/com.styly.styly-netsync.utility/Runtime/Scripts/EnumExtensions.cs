@@ -13,7 +13,7 @@ namespace Styly.NetSync.Utility
         public static bool TryParse<T>(this string str, out T outputRpc) where T : Enum
         {
             var result = Enum.TryParse(typeof(T), str, out var output);
-            outputRpc = (T) output;
+            outputRpc = result ? (T) output : default;
             return result;
         }
     }
