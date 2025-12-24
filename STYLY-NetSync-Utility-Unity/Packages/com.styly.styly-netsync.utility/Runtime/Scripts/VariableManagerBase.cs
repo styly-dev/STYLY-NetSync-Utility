@@ -108,22 +108,22 @@ namespace Styly.NetSync.Utility
             globalListeners[variable].Add(action);
         }
 
-        public void SetGlobal(TGlobalVariable variable, string value)
+        public void Set(TGlobalVariable variable, string value)
         {
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value);
         }
 
-        public void SetGlobal(TGlobalVariable variable, int value)
+        public void Set(TGlobalVariable variable, int value)
         {
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void SetGlobal(TGlobalVariable variable, float value)
+        public void Set(TGlobalVariable variable, float value)
         {
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void SetGlobal(TGlobalVariable variable, bool value)
+        public void Set(TGlobalVariable variable, bool value)
         {
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
         }
@@ -180,40 +180,40 @@ namespace Styly.NetSync.Utility
             userListeners[variable].Add(action);
         }
 
-        public void SetUser(TUserVariable variable, string value)
+        public void Set(TUserVariable variable, string value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value);
         }
 
-        public void SetUser(TUserVariable variable, int value)
+        public void Set(TUserVariable variable, int value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void SetUser(TUserVariable variable, float value)
+        public void Set(TUserVariable variable, float value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void SetUser(TUserVariable variable, bool value)
+        public void Set(TUserVariable variable, bool value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
         // clientNo指定版
-        public void SetUser(TUserVariable variable, int clientNo, string value)
+        public void Set(TUserVariable variable, int clientNo, string value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value, clientNo);
         }
-        public void SetUser(TUserVariable variable, int clientNo, int value)
+        public void Set(TUserVariable variable, int clientNo, int value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
-        public void SetUser(TUserVariable variable, int clientNo, float value)
+        public void Set(TUserVariable variable, int clientNo, float value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
-        public void SetUser(TUserVariable variable, int clientNo, bool value)
+        public void Set(TUserVariable variable, int clientNo, bool value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
