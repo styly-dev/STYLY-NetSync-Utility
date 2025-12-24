@@ -198,7 +198,25 @@ namespace Styly.NetSync.Utility
         {
             return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
-        
+
+        // clientNo指定版
+        public string Get(TUserVariable variable, int clientNo, string defaultValue = null)
+        {
+            return NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue);
+        }
+        public int GetAsInt(TUserVariable variable, int clientNo, int defaultValue = 0)
+        {
+            return int.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
+        }
+        public float GetAsFloat(TUserVariable variable, int clientNo, float defaultValue = 0f)
+        {
+            return float.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
+        }
+        public bool GetAsBool(TUserVariable variable, int clientNo, bool defaultValue = false)
+        {
+            return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
+        }
+
         public string Get(TGlobalVariable variable, string defaultValue = null)
         {
             return NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue);
