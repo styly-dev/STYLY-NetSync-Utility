@@ -153,6 +153,24 @@ namespace Styly.NetSync.Utility
             return AsObservable(variable).Select(v => new UserVariableData<float>(v.ClientNo, float.Parse(v.Value)));
         }
 
+        // clientNo指定版（特定クライアントの変更のみ購読、値を直接返す）
+        public Observable<string> AsObservable(TUserVariable variable, int clientNo)
+        {
+            return AsObservable(variable).Where(v => v.ClientNo == clientNo).Select(v => v.Value);
+        }
+        public Observable<bool> AsObservableBool(TUserVariable variable, int clientNo)
+        {
+            return AsObservable(variable, clientNo).Select(v => bool.Parse(v));
+        }
+        public Observable<int> AsObservableInt(TUserVariable variable, int clientNo)
+        {
+            return AsObservable(variable, clientNo).Select(v => int.Parse(v));
+        }
+        public Observable<float> AsObservableFloat(TUserVariable variable, int clientNo)
+        {
+            return AsObservable(variable, clientNo).Select(v => float.Parse(v));
+        }
+
         public void AddListener(TUserVariable variable, UnityAction<int, string> action)
         {
             if (!userListeners.ContainsKey(variable))
