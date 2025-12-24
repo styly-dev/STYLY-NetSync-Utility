@@ -199,7 +199,25 @@ namespace Styly.NetSync.Utility
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
-        
+
+        // clientNo指定版
+        public void SetUser(TUserVariable variable, int clientNo, string value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value, clientNo);
+        }
+        public void SetUser(TUserVariable variable, int clientNo, int value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
+        }
+        public void SetUser(TUserVariable variable, int clientNo, float value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
+        }
+        public void SetUser(TUserVariable variable, int clientNo, bool value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
+        }
+
         public string Get(TUserVariable variable, string defaultValue = null)
         {
             return NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue);
