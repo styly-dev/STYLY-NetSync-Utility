@@ -99,6 +99,11 @@ namespace Styly.NetSync.Utility
             return AsObservable(variable).Select(v => float.Parse(v));
         }
 
+        public Observable<TEnum> AsObservableEnum<TEnum>(TGlobalVariable variable) where TEnum : Enum
+        {
+            return AsObservable(variable).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
+        }
+
         public void AddListener(TGlobalVariable variable, UnityAction<string> action)
         {
             if (!globalListeners.ContainsKey(variable))
@@ -128,6 +133,11 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
         }
 
+        public void Set<TEnum>(TGlobalVariable variable, TEnum value) where TEnum : Enum
+        {
+            NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
+        }
+
         // UserVariable
         public Observable<UserVariableData<string>> AsObservable(TUserVariable variable)
         {
@@ -153,6 +163,11 @@ namespace Styly.NetSync.Utility
             return AsObservable(variable).Select(v => new UserVariableData<float>(v.ClientNo, float.Parse(v.Value)));
         }
 
+        public Observable<UserVariableData<TEnum>> AsObservableEnum<TEnum>(TUserVariable variable) where TEnum : Enum
+        {
+            return AsObservable(variable).Select(v => new UserVariableData<TEnum>(v.ClientNo, (TEnum)Enum.Parse(typeof(TEnum), v.Value)));
+        }
+
         // clientNo指定版（特定クライアントの変更のみ購読、値を直接返す）
         public Observable<string> AsObservable(TUserVariable variable, int clientNo)
         {
@@ -169,6 +184,11 @@ namespace Styly.NetSync.Utility
         public Observable<float> AsObservableFloat(TUserVariable variable, int clientNo)
         {
             return AsObservable(variable, clientNo).Select(v => float.Parse(v));
+        }
+
+        public Observable<TEnum> AsObservableEnum<TEnum>(TUserVariable variable, int clientNo) where TEnum : Enum
+        {
+            return AsObservable(variable, clientNo).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
         }
 
         public void AddListener(TUserVariable variable, UnityAction<int, string> action)
@@ -200,6 +220,11 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
+        public void Set<TEnum>(TUserVariable variable, TEnum value) where TEnum : Enum
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
+        }
+
         // clientNo指定版
         public void Set(TUserVariable variable, int clientNo, string value)
         {
@@ -214,6 +239,11 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
         public void Set(TUserVariable variable, int clientNo, bool value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
+        }
+
+        public void Set<TEnum>(TUserVariable variable, int clientNo, TEnum value) where TEnum : Enum
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
@@ -235,6 +265,12 @@ namespace Styly.NetSync.Utility
             return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
 
+        public TEnum Get<TEnum>(TUserVariable variable, TEnum defaultValue = default) where TEnum : Enum
+        {
+            var str = NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString());
+            return (TEnum)Enum.Parse(typeof(TEnum), str);
+        }
+
         // clientNo指定版
         public string Get(TUserVariable variable, int clientNo, string defaultValue = null)
         {
@@ -253,6 +289,12 @@ namespace Styly.NetSync.Utility
             return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
         }
 
+        public TEnum Get<TEnum>(TUserVariable variable, int clientNo, TEnum defaultValue = default) where TEnum : Enum
+        {
+            var str = NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString());
+            return (TEnum)Enum.Parse(typeof(TEnum), str);
+        }
+
         public string Get(TGlobalVariable variable, string defaultValue = null)
         {
             return NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue);
@@ -268,6 +310,12 @@ namespace Styly.NetSync.Utility
         public bool GetAsBool(TGlobalVariable variable, bool defaultValue = false)
         {
             return bool.Parse(NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+
+        public TEnum Get<TEnum>(TGlobalVariable variable, TEnum defaultValue = default) where TEnum : Enum
+        {
+            var str = NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString());
+            return (TEnum)Enum.Parse(typeof(TEnum), str);
         }
     }
 }
