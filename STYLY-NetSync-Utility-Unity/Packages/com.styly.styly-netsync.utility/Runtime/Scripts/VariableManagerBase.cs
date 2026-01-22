@@ -200,27 +200,27 @@ namespace Styly.NetSync.Utility
             userListeners[variable].Add(action);
         }
 
-        public void Set(TUserVariable variable, string value)
+        public void SetSelf(TUserVariable variable, string value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value);
         }
 
-        public void Set(TUserVariable variable, int value)
+        public void SetSelf(TUserVariable variable, int value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void Set(TUserVariable variable, float value)
+        public void SetSelf(TUserVariable variable, float value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void Set(TUserVariable variable, bool value)
+        public void SetSelf(TUserVariable variable, bool value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
-        public void Set<TEnum>(TUserVariable variable, TEnum value) where TEnum : Enum
+        public void SetSelf<TEnum>(TUserVariable variable, TEnum value) where TEnum : Enum
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
@@ -248,24 +248,24 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
 
-        public string Get(TUserVariable variable, string defaultValue = null)
+        public string GetSelf(TUserVariable variable, string defaultValue = null)
         {
             return NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue);
         }
-        public int GetAsInt(TUserVariable variable, int defaultValue = 0)
+        public int GetAsIntSelf(TUserVariable variable, int defaultValue = 0)
         {
             return int.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
-        public float GetAsFloat(TUserVariable variable, float defaultValue = 0f)
+        public float GetAsFloatSelf(TUserVariable variable, float defaultValue = 0f)
         {
             return float.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
-        public bool GetAsBool(TUserVariable variable, bool defaultValue = false)
+        public bool GetAsBoolSelf(TUserVariable variable, bool defaultValue = false)
         {
             return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
 
-        public TEnum Get<TEnum>(TUserVariable variable, TEnum defaultValue = default) where TEnum : Enum
+        public TEnum GetSelf<TEnum>(TUserVariable variable, TEnum defaultValue = default) where TEnum : Enum
         {
             var str = NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString());
             return (TEnum)Enum.Parse(typeof(TEnum), str);
