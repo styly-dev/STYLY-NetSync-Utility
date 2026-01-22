@@ -36,6 +36,7 @@ MonoBehaviour:
     m_Scopes:
     - com.cysharp
     - com.github-glitchenzo.nugetforunity
+    - com.styly.device-id-provider
     - com.styly.shader-collection.urp
     - com.styly.styly-netsync
     - com.styly.styly-xr-rig
@@ -60,6 +61,6 @@ MonoBehaviour:
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
-    m_UserModificationsInstanceId: -888
-    m_OriginalInstanceId: -892
+    m_UserModificationsInstanceId: -870
+    m_OriginalInstanceId: -874
   m_LoadAssets: 0
