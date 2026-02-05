@@ -99,6 +99,11 @@ namespace Styly.NetSync.Utility
             return AsObservable(variable).Select(v => float.Parse(v));
         }
 
+        public Observable<double> AsObservableDouble(TGlobalVariable variable)
+        {
+            return AsObservable(variable).Select(v => double.Parse(v));
+        }
+
         public Observable<TEnum> AsObservableEnum<TEnum>(TGlobalVariable variable) where TEnum : Enum
         {
             return AsObservable(variable).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
@@ -124,6 +129,11 @@ namespace Styly.NetSync.Utility
         }
 
         public void Set(TGlobalVariable variable, float value)
+        {
+            NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
+        }
+
+        public void Set(TGlobalVariable variable, double value)
         {
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
         }
@@ -163,6 +173,11 @@ namespace Styly.NetSync.Utility
             return AsObservable(variable).Select(v => new UserVariableData<float>(v.ClientNo, float.Parse(v.Value)));
         }
 
+        public Observable<UserVariableData<double>> AsObservableDouble(TUserVariable variable)
+        {
+            return AsObservable(variable).Select(v => new UserVariableData<double>(v.ClientNo, double.Parse(v.Value)));
+        }
+
         public Observable<UserVariableData<TEnum>> AsObservableEnum<TEnum>(TUserVariable variable) where TEnum : Enum
         {
             return AsObservable(variable).Select(v => new UserVariableData<TEnum>(v.ClientNo, (TEnum)Enum.Parse(typeof(TEnum), v.Value)));
@@ -184,6 +199,10 @@ namespace Styly.NetSync.Utility
         public Observable<float> AsObservableFloat(TUserVariable variable, int clientNo)
         {
             return AsObservable(variable, clientNo).Select(v => float.Parse(v));
+        }
+        public Observable<double> AsObservableDouble(TUserVariable variable, int clientNo)
+        {
+            return AsObservable(variable, clientNo).Select(v => double.Parse(v));
         }
 
         public Observable<TEnum> AsObservableEnum<TEnum>(TUserVariable variable, int clientNo) where TEnum : Enum
@@ -215,6 +234,11 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
         }
 
+        public void SetSelf(TUserVariable variable, double value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
+        }
+
         public void SetSelf(TUserVariable variable, bool value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString());
@@ -235,6 +259,10 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
         public void Set(TUserVariable variable, int clientNo, float value)
+        {
+            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
+        }
+        public void Set(TUserVariable variable, int clientNo, double value)
         {
             NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value.ToString(), clientNo);
         }
@@ -260,6 +288,10 @@ namespace Styly.NetSync.Utility
         {
             return float.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
+        public double GetAsDoubleSelf(TUserVariable variable, double defaultValue = 0d)
+        {
+            return double.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
         public bool GetAsBoolSelf(TUserVariable variable, bool defaultValue = false)
         {
             return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue.ToString()));
@@ -284,6 +316,10 @@ namespace Styly.NetSync.Utility
         {
             return float.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
         }
+        public double GetAsDouble(TUserVariable variable, int clientNo, double defaultValue = 0d)
+        {
+            return double.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
+        }
         public bool GetAsBool(TUserVariable variable, int clientNo, bool defaultValue = false)
         {
             return bool.Parse(NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue.ToString()));
@@ -306,6 +342,10 @@ namespace Styly.NetSync.Utility
         public float GetAsFloat(TGlobalVariable variable, float defaultValue = 0f)
         {
             return float.Parse(NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString()));
+        }
+        public double GetAsDouble(TGlobalVariable variable, double defaultValue = 0d)
+        {
+            return double.Parse(NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue.ToString()));
         }
         public bool GetAsBool(TGlobalVariable variable, bool defaultValue = false)
         {
