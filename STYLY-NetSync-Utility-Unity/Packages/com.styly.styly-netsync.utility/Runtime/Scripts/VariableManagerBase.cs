@@ -29,7 +29,7 @@ namespace Styly.NetSync.Utility
 
         Dictionary<TUserVariable, List<UnityAction<int, string>>> userListeners = new ();
         Dictionary<TUserVariable, Subject<UserVariableData<string>>> userSubjects = new ();
-        
+
         void Start()
         {
             NetSyncManager.Instance.OnGlobalVariableChanged.AddListener(OnGlobalVariableChanged);
@@ -74,8 +74,29 @@ namespace Styly.NetSync.Utility
             }
         }
 
-        // GlobalVariable
+        // ========== GlobalVariable ==========
+
+        /// <summary>
+        /// 購読時に現在値を初期値として流し、以降は変更を流す。
+        /// </summary>
         public Observable<string> AsObservable(TGlobalVariable variable)
+        {
+            return Observable.Defer(() =>
+            {
+                var currentValue = Get(variable);
+                var onChanged = AsObservableOnChanged(variable);
+                if (currentValue != null)
+                {
+                    return Observable.Concat(Observable.Return(currentValue), onChanged);
+                }
+                return onChanged;
+            });
+        }
+
+        /// <summary>
+        /// 変更時のみ値を流す（購読時に現在値は流れない）。
+        /// </summary>
+        public Observable<string> AsObservableOnChanged(TGlobalVariable variable)
         {
             if (!globalSubjects.ContainsKey(variable))
             {
@@ -107,6 +128,31 @@ namespace Styly.NetSync.Utility
         public Observable<TEnum> AsObservableEnum<TEnum>(TGlobalVariable variable) where TEnum : Enum
         {
             return AsObservable(variable).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
+        }
+
+        public Observable<bool> AsObservableOnChangedBool(TGlobalVariable variable)
+        {
+            return AsObservableOnChanged(variable).Select(v => bool.Parse(v));
+        }
+
+        public Observable<int> AsObservableOnChangedInt(TGlobalVariable variable)
+        {
+            return AsObservableOnChanged(variable).Select(v => int.Parse(v));
+        }
+
+        public Observable<float> AsObservableOnChangedFloat(TGlobalVariable variable)
+        {
+            return AsObservableOnChanged(variable).Select(v => float.Parse(v));
+        }
+
+        public Observable<double> AsObservableOnChangedDouble(TGlobalVariable variable)
+        {
+            return AsObservableOnChanged(variable).Select(v => double.Parse(v));
+        }
+
+        public Observable<TEnum> AsObservableOnChangedEnum<TEnum>(TGlobalVariable variable) where TEnum : Enum
+        {
+            return AsObservableOnChanged(variable).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
         }
 
         public void AddListener(TGlobalVariable variable, UnityAction<string> action)
@@ -148,8 +194,14 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value.ToString());
         }
 
-        // UserVariable
-        public Observable<UserVariableData<string>> AsObservable(TUserVariable variable)
+        // ========== UserVariable ==========
+
+        // 全クライアント版（初期値の一括取得はクライアント一覧APIがないため非対応）
+        /// <summary>
+        /// 変更時のみ値を流す（購読時に現在値は流れない）。
+        /// クライアント一覧APIがないため、初期値付きの AsObservable は提供しない。
+        /// </summary>
+        public Observable<UserVariableData<string>> AsObservableOnChanged(TUserVariable variable)
         {
             if (!userSubjects.ContainsKey(variable))
             {
@@ -158,36 +210,57 @@ namespace Styly.NetSync.Utility
             return userSubjects[variable];
         }
 
-        public Observable<UserVariableData<bool>> AsObservableBool(TUserVariable variable)
+        public Observable<UserVariableData<bool>> AsObservableOnChangedBool(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => new UserVariableData<bool>(v.ClientNo, bool.Parse(v.Value)));
+            return AsObservableOnChanged(variable).Select(v => new UserVariableData<bool>(v.ClientNo, bool.Parse(v.Value)));
         }
 
-        public Observable<UserVariableData<int>> AsObservableInt(TUserVariable variable)
+        public Observable<UserVariableData<int>> AsObservableOnChangedInt(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => new UserVariableData<int>(v.ClientNo, int.Parse(v.Value)));
+            return AsObservableOnChanged(variable).Select(v => new UserVariableData<int>(v.ClientNo, int.Parse(v.Value)));
         }
 
-        public Observable<UserVariableData<float>> AsObservableFloat(TUserVariable variable)
+        public Observable<UserVariableData<float>> AsObservableOnChangedFloat(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => new UserVariableData<float>(v.ClientNo, float.Parse(v.Value)));
+            return AsObservableOnChanged(variable).Select(v => new UserVariableData<float>(v.ClientNo, float.Parse(v.Value)));
         }
 
-        public Observable<UserVariableData<double>> AsObservableDouble(TUserVariable variable)
+        public Observable<UserVariableData<double>> AsObservableOnChangedDouble(TUserVariable variable)
         {
-            return AsObservable(variable).Select(v => new UserVariableData<double>(v.ClientNo, double.Parse(v.Value)));
+            return AsObservableOnChanged(variable).Select(v => new UserVariableData<double>(v.ClientNo, double.Parse(v.Value)));
         }
 
-        public Observable<UserVariableData<TEnum>> AsObservableEnum<TEnum>(TUserVariable variable) where TEnum : Enum
+        public Observable<UserVariableData<TEnum>> AsObservableOnChangedEnum<TEnum>(TUserVariable variable) where TEnum : Enum
         {
-            return AsObservable(variable).Select(v => new UserVariableData<TEnum>(v.ClientNo, (TEnum)Enum.Parse(typeof(TEnum), v.Value)));
+            return AsObservableOnChanged(variable).Select(v => new UserVariableData<TEnum>(v.ClientNo, (TEnum)Enum.Parse(typeof(TEnum), v.Value)));
         }
 
-        // clientNo指定版（特定クライアントの変更のみ購読、値を直接返す）
+        // clientNo指定版（購読時に現在値を初期値として流し、以降は変更を流す）
+        /// <summary>
+        /// 購読時に現在値を初期値として流し、以降は変更を流す。
+        /// </summary>
         public Observable<string> AsObservable(TUserVariable variable, int clientNo)
         {
-            return AsObservable(variable).Where(v => v.ClientNo == clientNo).Select(v => v.Value);
+            return Observable.Defer(() =>
+            {
+                var currentValue = Get(variable, clientNo);
+                var onChanged = AsObservableOnChanged(variable, clientNo);
+                if (currentValue != null)
+                {
+                    return Observable.Concat(Observable.Return(currentValue), onChanged);
+                }
+                return onChanged;
+            });
         }
+
+        /// <summary>
+        /// 変更時のみ値を流す（購読時に現在値は流れない）。
+        /// </summary>
+        public Observable<string> AsObservableOnChanged(TUserVariable variable, int clientNo)
+        {
+            return AsObservableOnChanged(variable).Where(v => v.ClientNo == clientNo).Select(v => v.Value);
+        }
+
         public Observable<bool> AsObservableBool(TUserVariable variable, int clientNo)
         {
             return AsObservable(variable, clientNo).Select(v => bool.Parse(v));
@@ -208,6 +281,28 @@ namespace Styly.NetSync.Utility
         public Observable<TEnum> AsObservableEnum<TEnum>(TUserVariable variable, int clientNo) where TEnum : Enum
         {
             return AsObservable(variable, clientNo).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
+        }
+
+        public Observable<bool> AsObservableOnChangedBool(TUserVariable variable, int clientNo)
+        {
+            return AsObservableOnChanged(variable, clientNo).Select(v => bool.Parse(v));
+        }
+        public Observable<int> AsObservableOnChangedInt(TUserVariable variable, int clientNo)
+        {
+            return AsObservableOnChanged(variable, clientNo).Select(v => int.Parse(v));
+        }
+        public Observable<float> AsObservableOnChangedFloat(TUserVariable variable, int clientNo)
+        {
+            return AsObservableOnChanged(variable, clientNo).Select(v => float.Parse(v));
+        }
+        public Observable<double> AsObservableOnChangedDouble(TUserVariable variable, int clientNo)
+        {
+            return AsObservableOnChanged(variable, clientNo).Select(v => double.Parse(v));
+        }
+
+        public Observable<TEnum> AsObservableOnChangedEnum<TEnum>(TUserVariable variable, int clientNo) where TEnum : Enum
+        {
+            return AsObservableOnChanged(variable, clientNo).Select(v => (TEnum)Enum.Parse(typeof(TEnum), v));
         }
 
         public void AddListener(TUserVariable variable, UnityAction<int, string> action)
