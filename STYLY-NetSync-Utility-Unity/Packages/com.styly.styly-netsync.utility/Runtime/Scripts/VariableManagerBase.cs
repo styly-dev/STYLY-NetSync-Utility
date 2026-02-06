@@ -74,6 +74,34 @@ namespace Styly.NetSync.Utility
             }
         }
 
+        // ========== Helper ==========
+
+        private static Observable<Unit> WhenReady()
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                if (NetSyncManager.Instance.IsReady)
+                {
+                    observer.OnNext(Unit.Default);
+                    observer.OnCompleted();
+                    return Disposable.Empty;
+                }
+
+                void OnReady()
+                {
+                    observer.OnNext(Unit.Default);
+                    observer.OnCompleted();
+                }
+
+                NetSyncManager.Instance.OnReady.AddListener(OnReady);
+
+                return Disposable.Create(() =>
+                {
+                    NetSyncManager.Instance.OnReady.RemoveListener(OnReady);
+                });
+            });
+        }
+
         // ========== GlobalVariable ==========
 
         /// <summary>
@@ -83,13 +111,17 @@ namespace Styly.NetSync.Utility
         {
             return Observable.Defer(() =>
             {
-                var currentValue = Get(variable);
                 var onChanged = AsObservableOnChanged(variable);
-                if (currentValue != null)
+
+                return WhenReady().SelectMany(_ =>
                 {
-                    return Observable.Concat(Observable.Return(currentValue), onChanged);
-                }
-                return onChanged;
+                    var currentValue = Get(variable);
+                    if (currentValue != null)
+                    {
+                        return Observable.Concat(Observable.Return(currentValue), onChanged);
+                    }
+                    return onChanged;
+                });
             });
         }
 
@@ -183,13 +215,17 @@ namespace Styly.NetSync.Utility
         {
             return Observable.Defer(() =>
             {
-                var currentValue = Get(variable, clientNo);
                 var onChanged = AsObservableOnChanged(variable, clientNo);
-                if (currentValue != null)
+
+                return WhenReady().SelectMany(_ =>
                 {
-                    return Observable.Concat(Observable.Return(currentValue), onChanged);
-                }
-                return onChanged;
+                    var currentValue = Get(variable, clientNo);
+                    if (currentValue != null)
+                    {
+                        return Observable.Concat(Observable.Return(currentValue), onChanged);
+                    }
+                    return onChanged;
+                });
             });
         }
 
