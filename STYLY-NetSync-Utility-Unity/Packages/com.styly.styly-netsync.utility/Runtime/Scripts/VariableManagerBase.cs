@@ -253,6 +253,54 @@ namespace Styly.NetSync.Utility
             return AsObservableOnChanged(variable, clientNo).Select(v => StringConverter.Parse<T>(v));
         }
 
+        // Self版（自分のclientNoを自動解決）
+        /// <summary>
+        /// 購読時に現在値を初期値として流し、以降は変更を流す（自分のみ）。
+        /// </summary>
+        public Observable<string> AsObservableSelf(TUserVariable variable)
+        {
+            return Observable.Defer(() =>
+            {
+                var onChanged = AsObservableOnChangedSelf(variable);
+
+                return WhenReady().SelectMany(_ =>
+                {
+                    var currentValue = GetSelf(variable);
+                    if (currentValue != null)
+                    {
+                        return Observable.Concat(Observable.Return(currentValue), onChanged);
+                    }
+                    return onChanged;
+                });
+            });
+        }
+
+        /// <summary>
+        /// 購読時に現在値を初期値として流し、以降は変更を流す（自分のみ、型変換付き）。
+        /// </summary>
+        public Observable<T> AsObservableSelf<T>(TUserVariable variable)
+        {
+            return AsObservableSelf(variable).Select(v => StringConverter.Parse<T>(v));
+        }
+
+        /// <summary>
+        /// 変更時のみ値を流す（自分のみ）。
+        /// </summary>
+        public Observable<string> AsObservableOnChangedSelf(TUserVariable variable)
+        {
+            return AsObservableOnChanged(variable)
+                .Where(v => v.ClientNo == NetSyncManager.Instance.ClientNo)
+                .Select(v => v.Value);
+        }
+
+        /// <summary>
+        /// 変更時のみ値を流す（自分のみ、型変換付き）。
+        /// </summary>
+        public Observable<T> AsObservableOnChangedSelf<T>(TUserVariable variable)
+        {
+            return AsObservableOnChangedSelf(variable).Select(v => StringConverter.Parse<T>(v));
+        }
+
         public void AddListener(TUserVariable variable, UnityAction<int, string> action)
         {
             if (!userListeners.ContainsKey(variable))
