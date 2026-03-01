@@ -1,12 +1,12 @@
 {
   "name": "com.styly.styly-netsync.utility",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "displayName": "STYLY NetSync Utility",
   "unity": "6000.0",
   "description": "STYLY NetSync Utility",
   "dependencies": {
     "com.cysharp.r3": "1.3.0",
-    "com.styly.styly-netsync": "0.8.0"
+    "com.styly.styly-netsync": "0.10.0"
   },
   "author": {
     "name": "STYLY, Inc.",

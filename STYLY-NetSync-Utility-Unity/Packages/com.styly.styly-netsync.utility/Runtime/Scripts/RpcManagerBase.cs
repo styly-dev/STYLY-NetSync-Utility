@@ -34,6 +34,16 @@ namespace Styly.NetSync.Utility
         {
             NetSyncManager.Instance.Rpc(EnumExtensions.ToStringValue(rpc), arg);
         }
+
+        public void Send(TRpc rpc, string[] arg, int targetClientNo)
+        {
+            NetSyncManager.Instance.Rpc(EnumExtensions.ToStringValue(rpc), arg, targetClientNo);
+        }
+
+        public void Send(TRpc rpc, string[] arg, int[] targetClientNos)
+        {
+            NetSyncManager.Instance.Rpc(EnumExtensions.ToStringValue(rpc), arg, targetClientNos);
+        }
         
         private void OnRpcReceived(int clientNo, string functionName, string[] parameter)
         {
