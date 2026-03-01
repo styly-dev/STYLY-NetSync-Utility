@@ -118,7 +118,7 @@ namespace Styly.NetSync.Utility
                     var currentValue = Get(variable);
                     if (currentValue != null)
                     {
-                        return Observable.Concat(Observable.Return(currentValue), onChanged);
+                        return onChanged.Prepend(currentValue);
                     }
                     return onChanged;
                 });
@@ -222,7 +222,7 @@ namespace Styly.NetSync.Utility
                     var currentValue = Get(variable, clientNo);
                     if (currentValue != null)
                     {
-                        return Observable.Concat(Observable.Return(currentValue), onChanged);
+                        return onChanged.Prepend(currentValue);
                     }
                     return onChanged;
                 });
@@ -268,7 +268,7 @@ namespace Styly.NetSync.Utility
                     var currentValue = GetSelf(variable);
                     if (currentValue != null)
                     {
-                        return Observable.Concat(Observable.Return(currentValue), onChanged);
+                        return onChanged.Prepend(currentValue);
                     }
                     return onChanged;
                 });
