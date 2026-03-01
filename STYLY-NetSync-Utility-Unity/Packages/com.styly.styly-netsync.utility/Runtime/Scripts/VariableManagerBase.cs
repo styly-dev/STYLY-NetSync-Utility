@@ -109,19 +109,23 @@ namespace Styly.NetSync.Utility
         /// </summary>
         public Observable<string> AsObservable(TGlobalVariable variable)
         {
-            return Observable.Defer(() =>
+            return Observable.Create<string>(observer =>
             {
-                var onChanged = AsObservableOnChanged(variable);
+                var d = new CompositeDisposable();
 
-                return WhenReady().SelectMany(_ =>
+                WhenReady().Subscribe(_ =>
                 {
                     var currentValue = Get(variable);
                     if (currentValue != null)
                     {
-                        return onChanged.Prepend(currentValue);
+                        observer.OnNext(currentValue);
                     }
-                    return onChanged;
-                });
+                    AsObservableOnChanged(variable)
+                        .Subscribe(v => observer.OnNext(v))
+                        .AddTo(d);
+                }).AddTo(d);
+
+                return d;
             });
         }
 
@@ -213,19 +217,23 @@ namespace Styly.NetSync.Utility
         /// </summary>
         public Observable<string> AsObservable(TUserVariable variable, int clientNo)
         {
-            return Observable.Defer(() =>
+            return Observable.Create<string>(observer =>
             {
-                var onChanged = AsObservableOnChanged(variable, clientNo);
+                var d = new CompositeDisposable();
 
-                return WhenReady().SelectMany(_ =>
+                WhenReady().Subscribe(_ =>
                 {
                     var currentValue = Get(variable, clientNo);
                     if (currentValue != null)
                     {
-                        return onChanged.Prepend(currentValue);
+                        observer.OnNext(currentValue);
                     }
-                    return onChanged;
-                });
+                    AsObservableOnChanged(variable, clientNo)
+                        .Subscribe(v => observer.OnNext(v))
+                        .AddTo(d);
+                }).AddTo(d);
+
+                return d;
             });
         }
 
@@ -259,19 +267,23 @@ namespace Styly.NetSync.Utility
         /// </summary>
         public Observable<string> AsObservableSelf(TUserVariable variable)
         {
-            return Observable.Defer(() =>
+            return Observable.Create<string>(observer =>
             {
-                var onChanged = AsObservableOnChangedSelf(variable);
+                var d = new CompositeDisposable();
 
-                return WhenReady().SelectMany(_ =>
+                WhenReady().Subscribe(_ =>
                 {
                     var currentValue = GetSelf(variable);
                     if (currentValue != null)
                     {
-                        return onChanged.Prepend(currentValue);
+                        observer.OnNext(currentValue);
                     }
-                    return onChanged;
-                });
+                    AsObservableOnChangedSelf(variable)
+                        .Subscribe(v => observer.OnNext(v))
+                        .AddTo(d);
+                }).AddTo(d);
+
+                return d;
             });
         }
 
