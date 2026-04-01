@@ -17,14 +17,12 @@ namespace Styly.NetSync.Utility
         
         public void OnPreprocessBuild(BuildReport report)
         {
-            Debug.Log("=== Build Preprocessing Started ===");
             CheckDefineSymbolsAndConfigureXR(report.summary.platformGroup);
         }
         
         [InitializeOnLoadMethod]
         static void OnEditorLoad()
         {
-            Debug.Log("=== Editor Loaded - Checking Define Symbols ===");
             CheckDefineSymbolsAndConfigureXR(EditorUserBuildSettings.selectedBuildTargetGroup);
         }
         
@@ -46,22 +44,12 @@ namespace Styly.NetSync.Utility
             if (existingOpenXR == null)
             {
                 XRPackageMetadataStore.AssignLoader(manager, openXRLoaderType, buildTargetGroup);
-                Debug.Log($"[BuildScript] Enabled OpenXR loader for {buildTargetGroup}");
-            }
-            else
-            {
-                Debug.Log($"[BuildScript] OpenXR loader already enabled for {buildTargetGroup}");
             }
 #else
             // Disable OpenXR loader when USE_OPENXR is NOT defined
             if (existingOpenXR != null)
             {
                 XRPackageMetadataStore.RemoveLoader(manager, openXRLoaderType, buildTargetGroup);
-                Debug.Log($"[BuildScript] Disabled OpenXR loader for {buildTargetGroup}");
-            }
-            else
-            {
-                Debug.Log($"[BuildScript] OpenXR loader already disabled for {buildTargetGroup}");
             }
 #endif
 
