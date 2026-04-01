@@ -24,10 +24,25 @@ namespace Styly.NetSync.Utility
         Dictionary<TRpc, List<UnityAction<int, string[]>>> rpcListeners = new ();
         Dictionary<TRpc, Subject<RpcData>> rpcSubjects = new ();
 
-        
-        public void Start()
+
+        void Start()
         {
             NetSyncManager.Instance.OnRPCReceived.AddListener(OnRpcReceived);
+        }
+
+        void OnDestroy()
+        {
+            if (NetSyncManager.Instance != null)
+            {
+                NetSyncManager.Instance.OnRPCReceived.RemoveListener(OnRpcReceived);
+            }
+
+            foreach (var subject in rpcSubjects.Values)
+            {
+                subject.Dispose();
+            }
+            rpcSubjects.Clear();
+            rpcListeners.Clear();
         }
 
         public void Send(TRpc rpc, string[] arg = null)
@@ -53,34 +68,44 @@ namespace Styly.NetSync.Utility
                 return;
             }
 
-            if (rpcListeners.ContainsKey(rpc))
+            if (rpcListeners.TryGetValue(rpc, out var listeners))
             {
-                rpcListeners[rpc]?.ForEach(x => x.Invoke(clientNo, parameter));
+                listeners?.ForEach(x => x.Invoke(clientNo, parameter));
             }
 
             // R3用のストリーム発行
-            if (rpcSubjects.ContainsKey(rpc))
+            if (rpcSubjects.TryGetValue(rpc, out var subject))
             {
-                rpcSubjects[rpc].OnNext(new RpcData(clientNo, parameter));
+                subject.OnNext(new RpcData(clientNo, parameter));
             }
         }
 
         public Observable<RpcData> AsObservable(TRpc rpc)
         {
-            if (!rpcSubjects.ContainsKey(rpc))
+            if (!rpcSubjects.TryGetValue(rpc, out var subject))
             {
-                rpcSubjects[rpc] = new Subject<RpcData>();
+                subject = new Subject<RpcData>();
+                rpcSubjects[rpc] = subject;
             }
-            return rpcSubjects[rpc];
+            return subject;
         }
-        
+
         public void AddListener(TRpc rpc, UnityAction<int, string[]> action)
         {
-            if (!rpcListeners.ContainsKey(rpc))
+            if (!rpcListeners.TryGetValue(rpc, out var list))
             {
-                rpcListeners[rpc] = new List<UnityAction<int, string[]>>();
+                list = new List<UnityAction<int, string[]>>();
+                rpcListeners[rpc] = list;
             }
-            rpcListeners[rpc].Add(action);
+            list.Add(action);
+        }
+
+        public void RemoveListener(TRpc rpc, UnityAction<int, string[]> action)
+        {
+            if (rpcListeners.TryGetValue(rpc, out var list))
+            {
+                list.Remove(action);
+            }
         }
     }
 }
