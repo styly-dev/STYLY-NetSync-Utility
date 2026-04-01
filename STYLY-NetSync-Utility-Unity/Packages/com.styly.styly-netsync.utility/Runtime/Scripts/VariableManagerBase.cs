@@ -61,7 +61,7 @@ namespace Styly.NetSync.Utility
         void OnGlobalVariableChanged(string name, string oldValue, string newValue)
         {
             // システム定義の変数はコンテンツ側で定義されていないためスキップ
-            if (!name.TryParse<TGlobalVariable>(out var variable))
+            if (!EnumExtensions.TryParse<TGlobalVariable>(name, out var variable))
             {
                 return;
             }
@@ -80,7 +80,7 @@ namespace Styly.NetSync.Utility
         void OnUserVariableChanged(int clientNo, string name, string oldValue, string newValue)
         {
             // システム定義の変数はコンテンツ側で定義されていないためスキップ
-            if (!name.TryParse<TUserVariable>(out var variable))
+            if (!EnumExtensions.TryParse<TUserVariable>(name, out var variable))
             {
                 return;
             }
@@ -172,22 +172,22 @@ namespace Styly.NetSync.Utility
 
         public void Set(TGlobalVariable variable, string value)
         {
-            NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), value);
+            NetSyncManager.Instance.SetGlobalVariable(variable.ToString(), value);
         }
 
         public void Set<T>(TGlobalVariable variable, T value)
         {
-            NetSyncManager.Instance.SetGlobalVariable(variable.ToStringValue(), StringConverter.ToString(value));
+            NetSyncManager.Instance.SetGlobalVariable(variable.ToString(), StringConverter.ToString(value));
         }
 
         public string Get(TGlobalVariable variable, string defaultValue = null)
         {
-            return NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), defaultValue);
+            return NetSyncManager.Instance.GetGlobalVariable(variable.ToString(), defaultValue);
         }
 
         public T Get<T>(TGlobalVariable variable, T defaultValue = default)
         {
-            var str = NetSyncManager.Instance.GetGlobalVariable(variable.ToStringValue(), StringConverter.ToString(defaultValue));
+            var str = NetSyncManager.Instance.GetGlobalVariable(variable.ToString(), StringConverter.ToString(defaultValue));
             return StringConverter.Parse<T>(str);
         }
 
@@ -338,43 +338,43 @@ namespace Styly.NetSync.Utility
 
         public void SetSelf(TUserVariable variable, string value)
         {
-            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value);
+            NetSyncManager.Instance.SetClientVariable(variable.ToString(), value);
         }
 
         public void SetSelf<T>(TUserVariable variable, T value)
         {
-            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), StringConverter.ToString(value));
+            NetSyncManager.Instance.SetClientVariable(variable.ToString(), StringConverter.ToString(value));
         }
 
         public void Set(TUserVariable variable, int clientNo, string value)
         {
-            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), value, clientNo);
+            NetSyncManager.Instance.SetClientVariable(variable.ToString(), value, clientNo);
         }
 
         public void Set<T>(TUserVariable variable, int clientNo, T value)
         {
-            NetSyncManager.Instance.SetClientVariable(variable.ToStringValue(), StringConverter.ToString(value), clientNo);
+            NetSyncManager.Instance.SetClientVariable(variable.ToString(), StringConverter.ToString(value), clientNo);
         }
 
         public string GetSelf(TUserVariable variable, string defaultValue = null)
         {
-            return NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), defaultValue);
+            return NetSyncManager.Instance.GetClientVariable(variable.ToString(), defaultValue);
         }
 
         public T GetSelf<T>(TUserVariable variable, T defaultValue = default)
         {
-            var str = NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), StringConverter.ToString(defaultValue));
+            var str = NetSyncManager.Instance.GetClientVariable(variable.ToString(), StringConverter.ToString(defaultValue));
             return StringConverter.Parse<T>(str);
         }
 
         public string Get(TUserVariable variable, int clientNo, string defaultValue = null)
         {
-            return NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, defaultValue);
+            return NetSyncManager.Instance.GetClientVariable(variable.ToString(), clientNo, defaultValue);
         }
 
         public T Get<T>(TUserVariable variable, int clientNo, T defaultValue = default)
         {
-            var str = NetSyncManager.Instance.GetClientVariable(variable.ToStringValue(), clientNo, StringConverter.ToString(defaultValue));
+            var str = NetSyncManager.Instance.GetClientVariable(variable.ToString(), clientNo, StringConverter.ToString(defaultValue));
             return StringConverter.Parse<T>(str);
         }
     }

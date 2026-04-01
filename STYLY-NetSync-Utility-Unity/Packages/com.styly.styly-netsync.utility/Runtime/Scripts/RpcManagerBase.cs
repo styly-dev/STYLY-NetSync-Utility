@@ -47,23 +47,23 @@ namespace Styly.NetSync.Utility
 
         public void Send(TRpc rpc, string[] arg = null)
         {
-            NetSyncManager.Instance.Rpc(EnumExtensions.ToStringValue(rpc), arg);
+            NetSyncManager.Instance.Rpc(rpc.ToString(), arg);
         }
 
         public void Send(TRpc rpc, string[] arg, int targetClientNo)
         {
-            NetSyncManager.Instance.Rpc(EnumExtensions.ToStringValue(rpc), arg, targetClientNo);
+            NetSyncManager.Instance.Rpc(rpc.ToString(), arg, targetClientNo);
         }
 
         public void Send(TRpc rpc, string[] arg, int[] targetClientNos)
         {
-            NetSyncManager.Instance.Rpc(EnumExtensions.ToStringValue(rpc), arg, targetClientNos);
+            NetSyncManager.Instance.Rpc(rpc.ToString(), arg, targetClientNos);
         }
         
         private void OnRpcReceived(int clientNo, string functionName, string[] parameter)
         {
             // システム定義のRPCはコンテンツ側で定義されていないためスキップ
-            if (!functionName.TryParse<TRpc>(out var rpc))
+            if (!EnumExtensions.TryParse<TRpc>(functionName, out var rpc))
             {
                 return;
             }
