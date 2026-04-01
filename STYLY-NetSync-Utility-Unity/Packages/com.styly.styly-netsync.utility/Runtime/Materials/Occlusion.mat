@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Occulusion
+  m_Name: Occlusion
   m_Shader: {fileID: 4800000, guid: 972e8626ae222464e91deca405e4df33, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

@@ -159,7 +159,7 @@ vars.AsObservable<int>(UserVar.Health, clientNo: 2)
 
 | Shader | Purpose |
 |--------|---------|
-| `NetSyncUtility/Occulusion` | A depth-only occlusion shader. Place it on real-world walls and floors to occlude virtual objects behind them. |
+| `NetSyncUtility/Occlusion` | A depth-only occlusion shader. Place it on real-world walls and floors to occlude virtual objects behind them. |
 | `NetSyncUtility/WarningWall` | A red lattice pattern shader that fades with distance. Used to visually warn players of play area boundaries. Uses triplanar projection so the pattern is independent of mesh orientation. |
 
 ## Editor Tools
