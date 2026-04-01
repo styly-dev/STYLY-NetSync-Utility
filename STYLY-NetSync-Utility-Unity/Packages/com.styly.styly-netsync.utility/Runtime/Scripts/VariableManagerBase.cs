@@ -36,6 +36,28 @@ namespace Styly.NetSync.Utility
             NetSyncManager.Instance.OnClientVariableChanged.AddListener(OnUserVariableChanged);
         }
 
+        void OnDestroy()
+        {
+            if (NetSyncManager.Instance != null)
+            {
+                NetSyncManager.Instance.OnGlobalVariableChanged.RemoveListener(OnGlobalVariableChanged);
+                NetSyncManager.Instance.OnClientVariableChanged.RemoveListener(OnUserVariableChanged);
+            }
+
+            foreach (var subject in globalSubjects.Values)
+            {
+                subject.Dispose();
+            }
+            foreach (var subject in userSubjects.Values)
+            {
+                subject.Dispose();
+            }
+            globalSubjects.Clear();
+            userSubjects.Clear();
+            globalListeners.Clear();
+            userListeners.Clear();
+        }
+
         void OnGlobalVariableChanged(string name, string oldValue, string newValue)
         {
             // システム定義の変数はコンテンツ側で定義されていないためスキップ
@@ -44,14 +66,14 @@ namespace Styly.NetSync.Utility
                 return;
             }
 
-            if (globalListeners.ContainsKey(variable))
+            if (globalListeners.TryGetValue(variable, out var listeners))
             {
-                globalListeners[variable]?.ForEach(x => x.Invoke(newValue));
+                listeners?.ForEach(x => x.Invoke(newValue));
             }
 
-            if (globalSubjects.ContainsKey(variable))
+            if (globalSubjects.TryGetValue(variable, out var subject))
             {
-                globalSubjects[variable].OnNext(newValue);
+                subject.OnNext(newValue);
             }
         }
 
@@ -63,43 +85,15 @@ namespace Styly.NetSync.Utility
                 return;
             }
 
-            if (userListeners.ContainsKey(variable))
+            if (userListeners.TryGetValue(variable, out var listeners))
             {
-                userListeners[variable]?.ForEach(x => x.Invoke(clientNo, newValue));
+                listeners?.ForEach(x => x.Invoke(clientNo, newValue));
             }
 
-            if (userSubjects.ContainsKey(variable))
+            if (userSubjects.TryGetValue(variable, out var subject))
             {
-                userSubjects[variable].OnNext(new UserVariableData<string>(clientNo, newValue));
+                subject.OnNext(new UserVariableData<string>(clientNo, newValue));
             }
-        }
-
-        // ========== Helper ==========
-
-        private static Observable<Unit> WhenReady()
-        {
-            return Observable.Create<Unit>(observer =>
-            {
-                if (NetSyncManager.Instance.IsReady)
-                {
-                    observer.OnNext(Unit.Default);
-                    observer.OnCompleted();
-                    return Disposable.Empty;
-                }
-
-                void OnReady()
-                {
-                    observer.OnNext(Unit.Default);
-                    observer.OnCompleted();
-                }
-
-                NetSyncManager.Instance.OnReady.AddListener(OnReady);
-
-                return Disposable.Create(() =>
-                {
-                    NetSyncManager.Instance.OnReady.RemoveListener(OnReady);
-                });
-            });
         }
 
         // ========== GlobalVariable ==========
@@ -113,7 +107,7 @@ namespace Styly.NetSync.Utility
             {
                 var d = new CompositeDisposable();
 
-                WhenReady().Subscribe(_ =>
+                EventManager.Instance.OnReadyAsObservable().Subscribe(_ =>
                 {
                     var currentValue = Get(variable);
                     if (currentValue != null)
@@ -142,11 +136,12 @@ namespace Styly.NetSync.Utility
         /// </summary>
         public Observable<string> AsObservableOnChanged(TGlobalVariable variable)
         {
-            if (!globalSubjects.ContainsKey(variable))
+            if (!globalSubjects.TryGetValue(variable, out var subject))
             {
-                globalSubjects[variable] = new Subject<string>();
+                subject = new Subject<string>();
+                globalSubjects[variable] = subject;
             }
-            return globalSubjects[variable];
+            return subject;
         }
 
         /// <summary>
@@ -159,11 +154,20 @@ namespace Styly.NetSync.Utility
 
         public void AddListener(TGlobalVariable variable, UnityAction<string> action)
         {
-            if (!globalListeners.ContainsKey(variable))
+            if (!globalListeners.TryGetValue(variable, out var list))
             {
-                globalListeners[variable] = new List<UnityAction<string>>();
+                list = new List<UnityAction<string>>();
+                globalListeners[variable] = list;
             }
-            globalListeners[variable].Add(action);
+            list.Add(action);
+        }
+
+        public void RemoveListener(TGlobalVariable variable, UnityAction<string> action)
+        {
+            if (globalListeners.TryGetValue(variable, out var list))
+            {
+                list.Remove(action);
+            }
         }
 
         public void Set(TGlobalVariable variable, string value)
@@ -196,11 +200,12 @@ namespace Styly.NetSync.Utility
         /// </summary>
         public Observable<UserVariableData<string>> AsObservableOnChanged(TUserVariable variable)
         {
-            if (!userSubjects.ContainsKey(variable))
+            if (!userSubjects.TryGetValue(variable, out var subject))
             {
-                userSubjects[variable] = new Subject<UserVariableData<string>>();
+                subject = new Subject<UserVariableData<string>>();
+                userSubjects[variable] = subject;
             }
-            return userSubjects[variable];
+            return subject;
         }
 
         /// <summary>
@@ -221,7 +226,7 @@ namespace Styly.NetSync.Utility
             {
                 var d = new CompositeDisposable();
 
-                WhenReady().Subscribe(_ =>
+                EventManager.Instance.OnReadyAsObservable().Subscribe(_ =>
                 {
                     var currentValue = Get(variable, clientNo);
                     if (currentValue != null)
@@ -271,7 +276,7 @@ namespace Styly.NetSync.Utility
             {
                 var d = new CompositeDisposable();
 
-                WhenReady().Subscribe(_ =>
+                EventManager.Instance.OnReadyAsObservable().Subscribe(_ =>
                 {
                     var currentValue = GetSelf(variable);
                     if (currentValue != null)
@@ -315,11 +320,20 @@ namespace Styly.NetSync.Utility
 
         public void AddListener(TUserVariable variable, UnityAction<int, string> action)
         {
-            if (!userListeners.ContainsKey(variable))
+            if (!userListeners.TryGetValue(variable, out var list))
             {
-                userListeners[variable] = new List<UnityAction<int, string>>();
+                list = new List<UnityAction<int, string>>();
+                userListeners[variable] = list;
             }
-            userListeners[variable].Add(action);
+            list.Add(action);
+        }
+
+        public void RemoveListener(TUserVariable variable, UnityAction<int, string> action)
+        {
+            if (userListeners.TryGetValue(variable, out var list))
+            {
+                list.Remove(action);
+            }
         }
 
         public void SetSelf(TUserVariable variable, string value)
