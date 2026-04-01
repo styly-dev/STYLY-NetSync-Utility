@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Styly.NetSync;
 using UnityEngine;
-using UnityEngine.Events;
 using R3;
 
 namespace Styly.NetSync.Utility
@@ -16,6 +14,11 @@ namespace Styly.NetSync.Utility
 
         void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
         }
 
