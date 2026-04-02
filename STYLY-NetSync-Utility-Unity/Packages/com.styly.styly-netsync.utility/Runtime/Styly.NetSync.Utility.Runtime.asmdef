@@ -1,6 +1,6 @@
 {
     "name": "Styly.NetSync.Utility.Runtime",
-    "rootNamespace": "",
+    "rootNamespace": "Styly.NetSync.Utility",
     "references": [
         "UniTask",
         "com.styly.styly-netsync"
