@@ -28,7 +28,7 @@ STYLY NetSync (`com.styly.styly-netsync`) のコア機能をラップし、**型
 | `com.styly.styly-netsync` | 0.10.2 | コアのネットワーク同期機能 |
 | `com.cysharp.r3` | 1.3.0 | Reactive Extensions (Observable) |
 | `com.unity.xr.management` | 4.5.2 | XR ローダー管理（`XRLoaderAutoConfigurator` で使用） |
-| UniTask | — | async/await 非同期処理 |
+| `com.cysharp.unitask` | 2.5.10 | async/await 非同期処理 |
 
 ## 基本的な使い方
 

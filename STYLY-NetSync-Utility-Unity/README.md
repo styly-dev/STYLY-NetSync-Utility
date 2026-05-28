@@ -28,7 +28,7 @@ A utility package that wraps the core functionality of STYLY NetSync (`com.styly
 | `com.styly.styly-netsync` | 0.10.2 | Core network synchronization |
 | `com.cysharp.r3` | 1.3.0 | Reactive Extensions (Observable) |
 | `com.unity.xr.management` | 4.5.2 | XR loader management (used by `XRLoaderAutoConfigurator`) |
-| UniTask | — | async/await support |
+| `com.cysharp.unitask` | 2.5.10 | async/await support |
 
 ## Basic Usage
 
