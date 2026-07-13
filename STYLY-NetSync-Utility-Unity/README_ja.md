@@ -175,10 +175,12 @@ XR Hands / XR Interaction Toolkit のサンプルスクリプトには、Unity �
 | **Tools > Suppress Project Validation Window** | 検証ウィンドウの自動表示を抑制する |
 | **Tools > Restore Project Validation Window** | 元の動作に戻す |
 
-### OpenXR ローダーの自動切り替え
+### OpenXR ローダーの自動設定
 
-`XRLoaderAutoConfigurator` は Scripting Define Symbols の `USE_OPENXR` の有無に応じて、OpenXR ローダーを自動的に有効化/無効化します。エディタ読み込み時およびビルド前処理で自動実行されるため、手動操作は不要です。
+`XRLoaderAutoConfigurator` は Scripting Define Symbols の `USE_OPENXR` の有無に応じて OpenXR ローダーの設定を同期します。エディタ読み込み時およびビルド前処理で自動実行されます。
 
-- `USE_OPENXR` 定義あり → OpenXR ローダーを有効化
-- `USE_OPENXR` 定義なし → OpenXR ローダーを無効化
+- `USE_OPENXR` **定義あり** → XR Plug-in Management に OpenXR ローダーが無い場合は割り当てます。
+- `USE_OPENXR` **定義なし** かつ OpenXR ローダーが **設定済み** → 設定ミスの可能性が高いとみなします。エディタ読み込み時には警告を出力し、ビルド時は XR ローダーの無いプレイヤーを黙って出力する代わりに `BuildFailedException` で**ビルドを失敗**させます。ローダーを**自動的に削除することはありません**。そのため、手動で直した設定が黙って元に戻ることはありません。
+
+> **重要:** OpenXR を使うプロジェクト（例: Meta Quest 向けビルド）では、**Project Settings → Player → Scripting Define Symbols** に `USE_OPENXR` を追加してください。追加しないと、OpenXR ローダーが設定された状態でのビルドは上記メッセージで失敗します。ローダー自体を外した場合は、実機でローディング画面のまま止まるプレイヤーが生成されます。
 

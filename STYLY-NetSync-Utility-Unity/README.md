@@ -175,9 +175,11 @@ XR Hands / XR Interaction Toolkit sample scripts contain code that automatically
 | **Tools > Suppress Project Validation Window** | Suppress the automatic Project Settings window |
 | **Tools > Restore Project Validation Window** | Restore the original behavior |
 
-### Automatic OpenXR Loader Switching
+### Automatic OpenXR Loader Configuration
 
-`XRLoaderAutoConfigurator` automatically enables or disables the OpenXR loader based on the presence of the `USE_OPENXR` Scripting Define Symbol. It runs automatically on editor load and as a build preprocessor — no manual action required.
+`XRLoaderAutoConfigurator` keeps the OpenXR loader in sync with the `USE_OPENXR` Scripting Define Symbol. It runs automatically on editor load and as a build preprocessor.
 
-- `USE_OPENXR` defined → OpenXR loader enabled
-- `USE_OPENXR` not defined → OpenXR loader disabled
+- `USE_OPENXR` **defined** → the OpenXR loader is assigned in XR Plug-in Management if it is missing.
+- `USE_OPENXR` **not defined** but the OpenXR loader **is** configured → this is treated as a configuration mistake. On editor load a warning is logged, and a build **fails** with a `BuildFailedException` instead of silently shipping a player with no XR loader. The loader is **never removed automatically**, so a manual fix is not silently reverted.
+
+> **Important:** If your project uses OpenXR (e.g. a Meta Quest build), add `USE_OPENXR` to **Project Settings → Player → Scripting Define Symbols**. Without it, a build with the OpenXR loader configured will fail with the message above. Omitting the loader entirely produces a player that hangs on the loading screen on device.
