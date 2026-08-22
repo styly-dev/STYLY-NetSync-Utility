@@ -151,14 +151,19 @@ jobs:
             COMPARE_LINE="**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$TAG_NAME"
           fi
 
-          echo "Creating release draft for $TAG_NAME..."
+          # main is checked out at this point, so HEAD is the bump commit.
+          # Pin the draft to that SHA rather than to the branch name: the tag is
+          # only created once the draft is published, and a branch target would
+          # resolve to whatever main points at by then.
+          TARGET_SHA=$(git rev-parse HEAD)
+
+          echo "Creating release draft for $TAG_NAME at $TARGET_SHA..."
 
           # Create release draft using GitHub CLI.
-          # The tag is only created once the draft is published, which is also
-          # when OpenUPM picks the release up.
+          # Publishing the draft creates the tag, which is what OpenUPM builds from.
           gh release create "$TAG_NAME" \
             --draft \
-            --target main \
+            --target "$TARGET_SHA" \
             --title "$TAG_NAME" \
             --notes "## What's Changed
 
@@ -223,6 +228,13 @@ jobs:
               echo "1. Fix the issue based on error messages"
               echo "2. Ensure develop branch is up to date"
               echo "3. Re-run this workflow"
+              echo ""
+              echo "#### If the failure happened after the version was pushed"
+              echo ""
+              echo "The bump commit is already on develop and possibly on main, so a re-run"
+              echo "stops at \`No changes to commit\`. Finish the remaining steps by hand:"
+              echo "fast-forward main to develop if that did not happen, then create the"
+              echo "release draft with \`gh release create v$VERSION --draft --target <sha>\`."
             fi
 
             echo ""
