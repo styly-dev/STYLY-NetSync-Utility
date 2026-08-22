@@ -182,5 +182,7 @@ XR Hands / XR Interaction Toolkit のサンプルスクリプトには、Unity �
 - `USE_OPENXR` **定義あり** → XR Plug-in Management に OpenXR ローダーが無い場合は割り当てます。
 - `USE_OPENXR` **定義なし** かつ OpenXR ローダーが **設定済み** → 設定ミスの可能性が高いとみなします。エディタ読み込み時には警告を出力し、ビルド時は XR ローダーの無いプレイヤーを黙って出力する代わりに `BuildFailedException` で**ビルドを失敗**させます。ローダーを**自動的に削除することはありません**。そのため、手動で直した設定が黙って元に戻ることはありません。
 
-> **重要:** OpenXR を使うプロジェクト（例: Meta Quest 向けビルド）では、**Project Settings → Player → Scripting Define Symbols** に `USE_OPENXR` を追加してください。追加しないと、OpenXR ローダーが設定された状態でのビルドは上記メッセージで失敗します。ローダー自体を外した場合は、実機でローディング画面のまま止まるプレイヤーが生成されます。
+> **重要:** OpenXR を使うプロジェクト（例: Meta Quest 向けビルド）では、**Project Settings → Player → Scripting Define Symbols** に `USE_OPENXR` を追加してください。追加しないと、OpenXR ローダーが設定された状態でのビルドは上記メッセージで失敗します。
+>
+> XR を使わないビルドを意図している場合は、XR Plug-in Management から OpenXR ローダーを外すのが正しい対処です。一方、XR アプリとして出すプロジェクトでローダーを外しては**いけません**。クラッシュもエラーもないまま、実機でローディング画面のまま止まるプレイヤーが生成されます。
 

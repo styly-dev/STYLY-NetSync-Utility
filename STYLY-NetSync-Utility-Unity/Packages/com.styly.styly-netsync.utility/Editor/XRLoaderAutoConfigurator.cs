@@ -51,8 +51,9 @@ namespace Styly.NetSync.Utility
             // Enable OpenXR loader when USE_OPENXR is defined
             if (existingOpenXR == null)
             {
-                XRPackageMetadataStore.AssignLoader(manager, openXRLoaderType, buildTargetGroup);
-                changed = true;
+                // AssignLoader can fail (e.g. com.unity.xr.openxr is not installed), in which
+                // case nothing was modified and the settings asset must not be re-saved.
+                changed = XRPackageMetadataStore.AssignLoader(manager, openXRLoaderType, buildTargetGroup);
             }
 #else
             // USE_OPENXR is NOT defined but the OpenXR loader is configured: treat it as a
@@ -73,7 +74,15 @@ namespace Styly.NetSync.Utility
                     throw new BuildFailedException("[XRLoaderAutoConfigurator] " + message);
                 }
 
-                Debug.LogWarning("[XRLoaderAutoConfigurator] " + message);
+                // Log once per editor session. This method runs on every domain reload
+                // (script recompile, entering play mode), and repeating the warning each
+                // time would be noise.
+                const string warnedKey = "Styly.NetSync.Utility.XRLoaderAutoConfigurator.Warned";
+                if (!SessionState.GetBool(warnedKey, false))
+                {
+                    SessionState.SetBool(warnedKey, true);
+                    Debug.LogWarning("[XRLoaderAutoConfigurator] " + message);
+                }
             }
 #endif
 
